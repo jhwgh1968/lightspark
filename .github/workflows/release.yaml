@@ -11,6 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: false
     steps:
+      - uses: actions/checkout@v2
+
+      - name: Generate body from ChangeLog
+        run: |
+          ./.github/parse_changelog.py ${{ github.ref }} ChangeLog >release.txt
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -19,6 +25,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
+          body_path: release.txt
           draft: true
           prerelease: false
 
