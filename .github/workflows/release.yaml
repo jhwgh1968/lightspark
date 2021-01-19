@@ -24,7 +24,7 @@ jobs:
       - name: Generate body from ChangeLog
         id: changelog
         run: |
-          export VERSION=`echo "${{ stesps.tag_name.outputs.tag_name }}" \
+          export VERSION=`echo "${{ steps.tag_name.outputs.tag_name }}" \
               | sed -e "s/lightspark-//"`
           ./.github/parse_changelog.py $VERSION ChangeLog >release.txt
           echo ::set-output name=version::${VERSION}
