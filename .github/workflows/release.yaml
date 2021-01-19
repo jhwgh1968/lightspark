@@ -17,7 +17,7 @@ jobs:
 
       - name: Generate body from ChangeLog
         run: |
-          export TAG_NAME=`echo "${{ github.ref }}" | sed -e "s/refs\/heads\/"`
+          export TAG_NAME=`echo "${{ github.ref }}" | sed -e "s/refs\/heads\//"`
           ./.github/parse_changelog.py $TAG_NAME ChangeLog >release.txt
 
       - name: Create Release
