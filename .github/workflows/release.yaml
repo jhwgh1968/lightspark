@@ -88,6 +88,7 @@ jobs:
           make
           sed -i -e "s/Lightspark Team/The Lightspark Developers/g" CPackConfig.cmake
           make package
+          mv -v Lightspark*exe installer.exe
 
       - name: Upload Installer Release Asset
         uses: actions/upload-release-asset@v1
@@ -95,8 +96,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
-          asset_path: ./*.exe
-          asset_name: Lightspark-${{ github.ref}}-win32.exe
+          asset_path: installer.exe
+          asset_name: Lightspark-Installer-win32.exe
           asset_content_type: application/octet-stream
 
   mxe64:
@@ -155,6 +156,7 @@ jobs:
           make
           sed -i -e "s/Lightspark Team/The Lightspark Developers/g" CPackConfig.cmake
           make package
+          mv -v Lightspark*exe installer.exe
 
       - name: Upload Installer Release Asset
         uses: actions/upload-release-asset@v1
@@ -162,6 +164,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
-          asset_path: x86_64/Releases/**/*.exe
-          asset_name: Lightspark-${{ github.ref}}-win64.exe
+          asset_path: installer.exe
+          asset_name: Lightspark-Installer-win64.exe
           asset_content_type: application/octet-stream
