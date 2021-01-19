@@ -6,10 +6,12 @@ on:
 name: Draft Release
 
 jobs:
-  draft-release:
+  draft_release:
     name: Create Release
     runs-on: ubuntu-latest
     continue-on-error: false
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v2
 
@@ -33,7 +35,7 @@ jobs:
     name: Release 32-bit Windows Installer
     runs-on: ubuntu-18.04
     continue-on-error: false
-    needs: draft-release
+    needs: draft_release
     env:
       CFLAGS: -std=c11
       CXXFLAGS: -std=c++11
@@ -87,12 +89,11 @@ jobs:
           make package
 
       - name: Upload Installer Release Asset
-        id: ${{ needs.draft-release.outputs.id }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.draft-release.outputs.upload_url }}
+          upload_url: ${{ needs.draft_release.outputs.upload_url }}
           asset_path: ./*.exe
           asset_name: Lightspark-${{ github.ref}}-win32.exe
           asset_content_type: application/octet-stream
@@ -154,12 +155,11 @@ jobs:
           make package
 
       - name: Upload Installer Release Asset
-        id: ${{ needs.draft-release.outputs.id }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ needs.draft-release.outputs.upload_url }}
+          upload_url: ${{ needs.draft_release.outputs.upload_url }}
           asset_path: x86_64/Releases/**/*.exe
           asset_name: Lightspark-${{ github.ref}}-win64.exe
           asset_content_type: application/octet-stream
