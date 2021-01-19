@@ -1,7 +1,7 @@
 on:
   create:
     tags:
-      - '[0-9]*'
+      - 'lightspark-[0-9]*'
 
 name: Draft Release
 
@@ -12,13 +12,22 @@ jobs:
     continue-on-error: false
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      tag_name: ${{ steps.tag_name.outputs.tag_name }}
+      version: ${{ steps.changelog.outputs.version }}
     steps:
       - uses: actions/checkout@v2
 
+      - name: Get Tag Name
+        id: tag_name
+        run: echo ::set-output name=tag_name::${GITHUB_REF/refs\/tags\//}
+
       - name: Generate body from ChangeLog
+        id: changelog
         run: |
-          export TAG_NAME=`echo "${{ github.ref }}" | sed -e "s/refs\/tags\///"`
-          ./.github/parse_changelog.py $TAG_NAME ChangeLog >release.txt
+          export VERSION=`echo "${{ stesps.tag_name.outputs.tag_name }}" \
+              | sed -e "s/lightspark-//"`
+          ./.github/parse_changelog.py $VERSION ChangeLog >release.txt
+          echo ::set-output name=version::${VERSION}
 
       - name: Create Release
         id: create_release
@@ -97,7 +106,7 @@ jobs:
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
           asset_path: installer.exe
-          asset_name: Lightspark-Installer-win32.exe
+          asset_name: Lightspark-v${{ needs.draft_release.outputs.version }}-Installer-win32.exe
           asset_content_type: application/octet-stream
 
   mxe64:
@@ -165,5 +174,5 @@ jobs:
         with:
           upload_url: ${{ needs.draft_release.outputs.upload_url }}
           asset_path: installer.exe
-          asset_name: Lightspark-Installer-win64.exe
+          asset_name: Lightspark-v${{ needs.draft_release.outputs.version }}-Installer-win64.exe
           asset_content_type: application/octet-stream
