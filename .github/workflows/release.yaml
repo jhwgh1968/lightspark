@@ -102,6 +102,7 @@ jobs:
     name: Release 64-bit Windows Installer
     runs-on: ubuntu-18.04
     continue-on-error: false
+    needs: draft_release
     env:
       CFLAGS: -std=c11
       CXXFLAGS: -std=c++11
